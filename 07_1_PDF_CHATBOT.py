@@ -195,11 +195,11 @@ with gr.Blocks() as demo:
 
     # 챗봇의 답변을 처리하는 함수
     def respond(message, chat_history):
-      bot_message = get_chatbot_response(message)
+        bot_message = get_chatbot_response(message)
 
-      # 채팅 기록에 사용자의 메시지와 봇의 응답을 추가.
-      chat_history.append((message, bot_message))
-      return "", chat_history
+        # 채팅 기록에 사용자의 메시지와 봇의 응답을 추가.
+        chat_history.append((message, bot_message))
+        return "", chat_history
 
     # 사용자의 입력을 제출(submit)하면 respond 함수가 호출.
     msg.submit(respond, [msg, chatbot], [msg, chatbot])
