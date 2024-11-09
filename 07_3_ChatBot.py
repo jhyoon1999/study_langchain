@@ -4,7 +4,7 @@ from langchain.prompts import PromptTemplate
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain.chains import RetrievalQA
-import streamlit as st
+import gradio as gr
 
 with open('GPT_API_KEY.txt', 'r') as f:
     api_key = f.read().strip()
@@ -73,7 +73,28 @@ for user_msg, bot_msg in st.session_state.chat_history:
     st.write(f"**사용자:** {user_msg}")
     st.write(f"**챗봇:** {bot_msg}")
 
+# 인터페이스를 생성.
+with gr.Blocks() as demo:
+    chatbot = gr.Chatbot(label="경제금융용어 챗봇") # 경제금융용어 챗봇 레이블을 좌측 상단에 구성
+    msg = gr.Textbox(label="질문해주세요!")  # 하단의 채팅창의 레이블
+    clear = gr.Button("대화 초기화")  # 대화 초기화 버튼
 
+    # 챗봇의 답변을 처리하는 함수
+    def respond(message, chat_history):
+      bot_message = get_chatbot_response(message)
+
+      # 채팅 기록에 사용자의 메시지와 봇의 응답을 추가.
+      chat_history.append((message, bot_message))
+      return "", chat_history
+
+    # 사용자의 입력을 제출(submit)하면 respond 함수가 호출.
+    msg.submit(respond, [msg, chatbot], [msg, chatbot])
+
+    # '초기화' 버튼을 클릭하면 채팅 기록을 초기화.
+    clear.click(lambda: None, None, chatbot, queue=False)
+
+# 인터페이스 실행.
+demo.launch(debug=True)
 
 
 
